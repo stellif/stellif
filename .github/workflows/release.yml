@@ -1,0 +1,90 @@
+name: Release
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    branches:
+      - master
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: paulhatch/semantic-version@v4.0.2
+        id: semver
+        with:
+          # The prefix to use to identify tags
+          tag_prefix: ""
+          # A string which, if present in a git commit, indicates that a change represents a
+          # major (breaking) change, supports regular expressions wrapped with '/'
+          major_pattern: "(MAJOR)"
+          # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+          minor_pattern: "(MINOR)"
+          # A string to determine the format of the version output
+          format: "${major}.${minor}.${patch}"
+          # If this is set to true, *every* commit will be treated as a new version.
+          bump_each_commit: true
+
+      - run: echo ${{steps.semver.outputs.version_tag}} > version.txt
+
+      - run: git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline > new-in-this-release.log
+
+      - name: Read git log
+        id: package
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./new-in-this-release.log
+
+      - name: "Create Release"
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: ${{steps.semver.outputs.version_tag}}
+          release_name: ${{steps.semver.outputs.version_tag}}
+          body: ${{ steps.package.outputs.content }}
+          draft: false
+          prerelease: false
+
+      - name: "Install PHP dependencies"
+        uses: php-actions/composer@v6
+
+      - uses: actions/setup-node@v2
+
+      - name: "Install JS dependencies"
+        run: cd admin && npm install
+
+      - name: "Build admin"
+        run: cd admin && npm run build
+
+      - name: "Remove not-needed files"
+        run: rm -rf admin/ && rm -rf .github/ && rm composer.json && rm composer.lock && rm DOCKER_ENV && rm docker_tag && rm new-in-this-release.log && rm output.log
+
+      - name: "ZIP"
+        uses: papeloto/action-zip@v1
+        with:
+          files: /
+          dest: stellif-${{steps.semver.outputs.version_tag}}.zip
+
+      - name: "Publish"
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: stellif-${{steps.semver.outputs.version_tag}}.zip
+          path: stellif-${{steps.semver.outputs.version_tag}}.zip
+
+      - name: "Upload"
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          upload_url: ${{steps.create_release.outputs.upload_url}}
+          asset_path: stellif-${{steps.semver.outputs.version_tag}}.zip
+          asset_name: stellif-${{steps.semver.outputs.version_tag}}.zip
+          asset_content_type: application/zip

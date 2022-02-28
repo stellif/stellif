@@ -1,0 +1,9 @@
+{% if post %}
+
+	<h2>
+		<a href="{{ url }}/{{ post.slug }}">{{ post.title }}</a>
+	</h2>
+
+	<div class="entry">{{ parse_blocks(post.content)|raw }}</div>
+
+{% endif %}
