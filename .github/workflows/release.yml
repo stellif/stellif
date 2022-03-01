@@ -58,13 +58,13 @@ jobs:
       - uses: actions/setup-node@v2
 
       - name: "Install JS dependencies"
-        run: cd admindev && npm install
+        run: cd admin && npm install
 
       - name: "Build admin"
-        run: cd admindev && npm run build
+        run: cd admin && npm run build
 
       - name: "Remove not-needed files"
-        run: rm -rf admindev/ && rm -rf .github/ && rm composer.json && rm composer.lock && rm DOCKER_ENV && rm docker_tag && rm new-in-this-release.log && rm output.log
+        run: rm -rf admin/ && rm -rf .github/ && rm composer.json && rm composer.lock && rm DOCKER_ENV && rm docker_tag && rm new-in-this-release.log && rm output.log
 
       - name: "ZIP"
         uses: papeloto/action-zip@v1
