@@ -24,7 +24,7 @@ class AdminController
      */
     public function index(Request $request, Response $response)
     {
-        $admin = file_get_contents(STELLIF_ROOT . '/public/assets/stellif/admin/index.html', true);
+        $admin = file_get_contents(STELLIF_ROOT . '/assets/stellif/admin/index.html', true);
 
         if (!$admin) {
             return $response->make('Could not load admin.');
