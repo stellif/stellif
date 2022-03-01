@@ -36,6 +36,8 @@ class Updater
 
             if ($latestReleaseRequest->success) {
                 $latestRelease = json_decode($latestReleaseRequest->body, true);
+                var_dump($latestRelease['tag_name']);
+                var_dump($version);
 
                 if ($latestRelease['tag_name'] !== $version) {
                     $this->latestReleaseURL = $latestRelease['assets'][0]['browser_download_url'];
