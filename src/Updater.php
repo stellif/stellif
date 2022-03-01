@@ -43,7 +43,7 @@ class Updater
         }
 
         try {
-            $version = @file_get_contents(STELLIF_ROOT . '/version.txt', true);
+            $version = @file_get_contents(STELLIF_ROOT . '/.version', true);
             $latestReleaseRequest = Requests::get($this->infoURL, ['User-Agent' => 'stellif\stellif']);
 
             if ($latestReleaseRequest->success) {
@@ -176,31 +176,33 @@ class Updater
     {
         if (isset($this->latestReleaseURL) && $this->latestReleaseURL !== '') {
             // Download latest version
-            Requests::get($this->latestReleaseURL, [], [
+            $response = Requests::get($this->latestReleaseURL, [], [
                 'filename' => STELLIF_ROOT . '/stellif-update.zip'
             ]);
 
-            // Backup files
-            $this->backupFiles();
+            if ($response->success) {
+                // Backup files
+                $this->backupFiles();
 
-            // Delete files
-            $this->deleteFiles();
+                // Delete files
+                $this->deleteFiles();
 
-            // Unpack files
-            $zip = new \ZipArchive;
+                // Unpack files
+                $zip = new \ZipArchive;
 
-            if ($zip->open(STELLIF_ROOT . '/stellif-update.zip') === true) {
-                $zip->extractTo(STELLIF_ROOT);
-                $zip->close();
-            } else {
-                Logger::log(__METHOD__, 'Could not unzip update.');
+                if ($zip->open(STELLIF_ROOT . '/stellif-update.zip') === true) {
+                    $zip->extractTo(STELLIF_ROOT);
+                    $zip->close();
+                } else {
+                    Logger::log(__METHOD__, 'Could not unzip update.');
+                }
+
+                // Delete update zip
+                unlink(STELLIF_ROOT . '/stellif-update.zip');
+
+                // Restore backup files
+                $this->restoreBackupFiles();
             }
-
-            // Delete update zip
-            unlink(STELLIF_ROOT . '/stellif-update.zip');
-
-            // Restore backup files
-            $this->restoreBackupFiles();
         }
     }
 }
