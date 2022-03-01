@@ -21,7 +21,7 @@ class Updater
     {
         $lastChecked = Capsule::table('meta')->where('key', 'update_checked_timestamp')->first();
 
-        if ($lastChecked) {
+        if ($lastChecked && $lastChecked->value !== '') {
             $this->updateCheckedTimestamp = (int) $lastChecked->value;
         }
 
@@ -48,7 +48,11 @@ class Updater
 
             if ($latestReleaseRequest->success) {
                 $latestRelease = json_decode($latestReleaseRequest->body, true);
-                Capsule::table('meta')->where('key', 'update_checked_timestamp')->update(['value' => time()]);
+
+                Capsule::table('meta')->upsert([[
+                    'key' => 'update_checked_timestamp',
+                    'value' => strval(time()),
+                ]], ['key']);
 
                 if ($latestRelease['tag_name'] !== $version) {
                     $this->latestReleaseURL = $latestRelease['assets'][0]['browser_download_url'];
