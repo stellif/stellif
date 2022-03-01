@@ -3,6 +3,7 @@
 namespace Stellif\Stellif;
 
 use WpOrg\Requests\Requests;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Updater
 {
@@ -14,9 +15,16 @@ class Updater
 
     private string $infoURL = 'https://api.github.com/repos/stellif/stellif/releases/latest';
     private string $latestReleaseURL;
+    private int|bool $updateCheckedTimestamp = false;
 
     public function __construct()
     {
+        $lastChecked = Capsule::table('meta')->where('key', 'update_checked_timestamp')->first();
+
+        if ($lastChecked) {
+            $this->updateCheckedTimestamp = (int) $lastChecked->value;
+        }
+
         if ($this->isUpdateAvailable()) {
             $this->update();
         }
@@ -29,14 +37,18 @@ class Updater
             return false;
         }
 
+        // We also don't want to run it if we checked it recently (less than 1 hour ago)
+        if ($this->updateCheckedTimestamp && (abs(time() - $this->updateCheckedTimestamp) / 3600) < 1) {
+            return false;
+        }
+
         try {
             $version = @file_get_contents(STELLIF_ROOT . '/version.txt', true);
             $latestReleaseRequest = Requests::get($this->infoURL, ['User-Agent' => 'stellif\stellif']);
 
             if ($latestReleaseRequest->success) {
                 $latestRelease = json_decode($latestReleaseRequest->body, true);
-                var_dump($latestRelease['tag_name']);
-                var_dump($version);
+                Capsule::table('meta')->where('key', 'update_checked_timestamp')->update(['value' => time()]);
 
                 if ($latestRelease['tag_name'] !== $version) {
                     $this->latestReleaseURL = $latestRelease['assets'][0]['browser_download_url'];

@@ -157,7 +157,9 @@ class Core
         static::init();
 
         // Run updater
-        (new Updater);
+        if (static::isSetup()) {
+            (new Updater);
+        }
 
         // Register routes
         $router = new Router();
