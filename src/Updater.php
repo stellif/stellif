@@ -6,8 +6,9 @@ use WpOrg\Requests\Requests;
 
 class Updater
 {
-    private array $noDeleteList = [
+    private array $backupItems = [
         STELLIF_ROOT . '/public/assets/themes',
+        STELLIF_ROOT . '/public_html/assets/themes',
         STELLIF_ROOT . '/views/themes',
         STELLIF_ROOT . '/stellif.db',
     ];
@@ -24,6 +25,11 @@ class Updater
 
     public function isUpdateAvailable(): bool
     {
+        // We don't want to run updater in devmode
+        if (file_exists(STELLIF_ROOT . '/composer.json')) {
+            return false;
+        }
+
         try {
             $version = @file_get_contents(STELLIF_ROOT . '/version.txt', true);
             $latestReleaseRequest = Requests::get($this->infoURL, ['User-Agent' => 'stellif\stellif']);
@@ -93,7 +99,7 @@ class Updater
 
     private function backupFiles(): void
     {
-        foreach ($this->noDeleteList as $item) {
+        foreach ($this->backupItems as $item) {
             if (is_dir($item)) {
                 foreach ($this->findFilesInPath($item) as $path) {
                     $backupPath = STELLIF_ROOT . '/_tmp' . str_replace(STELLIF_ROOT, '', $path);
