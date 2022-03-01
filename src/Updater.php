@@ -152,6 +152,8 @@ class Updater
                 rename($item, $restorePath);
             }
         }
+
+        $this->removeDir(STELLIF_ROOT . '/_tmp');
     }
 
     private function update(): void
