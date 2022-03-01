@@ -122,7 +122,7 @@ class Updater
                     $backupPath = STELLIF_ROOT . '/_tmp' . str_replace(STELLIF_ROOT, '', $path);
 
                     if (!is_dir(dirname($backupPath))) {
-                        mkdir(dirname($backupPath), 0777, true);
+                        mkdir(dirname($backupPath), 0644, true);
                     }
 
                     rename($path, $backupPath);
@@ -133,7 +133,7 @@ class Updater
                 $backupPath = STELLIF_ROOT . '/_tmp' . str_replace(STELLIF_ROOT, '', $item);
 
                 if (!is_dir(dirname($backupPath))) {
-                    mkdir(dirname($backupPath), 0777, true);
+                    mkdir(dirname($backupPath), 0644, true);
                 }
 
                 rename($item, $backupPath);
@@ -151,7 +151,7 @@ class Updater
                     $restorePath = STELLIF_ROOT . '/' . str_replace(STELLIF_ROOT . '/_tmp', '', $path);
 
                     if (!is_dir(dirname($restorePath))) {
-                        mkdir(dirname($restorePath), 0777, true);
+                        mkdir(dirname($restorePath), 0644, true);
                     }
 
                     rename($path, $restorePath);
@@ -162,7 +162,7 @@ class Updater
                 $restorePath = STELLIF_ROOT . '/' . str_replace(STELLIF_ROOT . '/_tmp', '', $item);
 
                 if (!is_dir(dirname($restorePath))) {
-                    mkdir(dirname($restorePath), 0777, true);
+                    mkdir(dirname($restorePath), 0644, true);
                 }
 
                 rename($item, $restorePath);

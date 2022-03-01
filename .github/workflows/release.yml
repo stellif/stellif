@@ -30,7 +30,7 @@ jobs:
           # If this is set to true, *every* commit will be treated as a new version.
           bump_each_commit: true
 
-      - run: echo ${{steps.semver.outputs.version_tag}} > version.txt
+      - run: echo ${{steps.semver.outputs.version_tag}} > .version
 
       - run: git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline > new-in-this-release.log
 
@@ -64,7 +64,7 @@ jobs:
         run: cd admin && npm run build
 
       - name: "Remove not-needed files"
-        run: rm -rf admin/ && rm -rf .github/ && rm composer.json && rm composer.lock && rm DOCKER_ENV && rm docker_tag && rm new-in-this-release.log && rm output.log
+        run: rm -rf .git/ && rm .gitignore && rm -rf admin/ && rm -rf .github/ && rm composer.json && rm composer.lock && rm DOCKER_ENV && rm docker_tag && rm new-in-this-release.log && rm output.log
 
       - name: "ZIP"
         uses: papeloto/action-zip@v1
