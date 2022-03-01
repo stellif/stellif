@@ -2,5 +2,5 @@
 log/
 cache/
 vendor/
-public/assets/stellif/admin
+assets/stellif/admin
 stellif.db
