@@ -7,8 +7,7 @@ use WpOrg\Requests\Requests;
 class Updater
 {
     private array $backupItems = [
-        STELLIF_ROOT . '/public/assets/themes',
-        STELLIF_ROOT . '/public_html/assets/themes',
+        STELLIF_ROOT . '/assets/themes',
         STELLIF_ROOT . '/views/themes',
         STELLIF_ROOT . '/stellif.db',
     ];
