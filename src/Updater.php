@@ -43,7 +43,7 @@ class Updater
         }
 
         try {
-            $version = @file_get_contents(STELLIF_ROOT . '/.version', true);
+            $version = @file_get_contents(STELLIF_ROOT . '/version.txt', true);
             $latestReleaseRequest = Requests::get($this->infoURL, ['User-Agent' => 'stellif\stellif']);
 
             if ($latestReleaseRequest->success) {
