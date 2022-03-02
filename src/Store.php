@@ -52,7 +52,7 @@ class Store
         return $default;
     }
 
-    public static function find(string $path, array $rules = []): bool|array
+    public static function find(string $path, array $rules = []): array
     {
         $items = static::get($path);
         $matchedItems = [];

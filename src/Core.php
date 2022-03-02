@@ -36,7 +36,7 @@ class Core
      */
     public static function isSetup(): bool
     {
-        return Store::find('users') !== false;
+        return count(Store::find('users')) !== 0;
     }
 
     /**
