@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Stellif\Stellif\Controllers;
 
-use Stellif\Stellif\Core;
 use Stellif\Stellif\Request;
 use Stellif\Stellif\Response;
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Database\Schema\Blueprint;
+use Stellif\Stellif\Store;
 
 /**
  * The SetupController is the first entry-point of a user to the
@@ -53,72 +51,11 @@ class SetupController
             ]);
         }
 
-        // Create database
-        $this->createDatabase();
-
-        // Create user
-        Capsule::table('users')->insert([
+        Store::put('users/1', [
             'email' => $request->input('email'),
             'password' => password_hash($request->input('password'), PASSWORD_BCRYPT),
         ]);
 
         return $response->redirect('/admin');
-    }
-
-    /**
-     * Creates the database file and schema.
-     *
-     * @return void
-     */
-    private function createDatabase()
-    {
-        // Create database file
-        mkdir(STELLIF_ROOT . '/db/', 0777);
-        $f = fopen(Core::$dbPath, 'w');
-        fclose($f);
-        chmod(Core::$dbPath, 0777);
-
-        // Create users table
-        Capsule::schema()->dropIfExists('users');
-
-        Capsule::schema()->create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->timestamps();
-        });
-
-        // Create meta table
-        Capsule::schema()->dropIfExists('meta');
-
-        Capsule::schema()->create('meta', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('key')->unique();
-            $table->text('value')->nullable();
-        });
-
-        // Create posts table
-        Capsule::schema()->dropIfExists('posts');
-
-        Capsule::schema()->create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_id');
-            $table->text('title')->nullable();
-            $table->string('slug')->nullable();
-            $table->string('status');
-            $table->text('content')->nullable();
-            $table->dateTime('published_at')->nullable();
-            $table->timestamps();
-        });
-
-        // Create post meta table
-        Capsule::schema()->dropIfExists('post_meta');
-
-        Capsule::schema()->create('post_meta', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('post_id');
-            $table->string('key')->unique();
-            $table->text('value')->nullable();
-        });
     }
 }

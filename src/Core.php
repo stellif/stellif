@@ -17,8 +17,6 @@ use Illuminate\Database\Capsule\Manager as Capsule;
  */
 class Core
 {
-    public static string $dbPath = STELLIF_ROOT . '/db/core.db';
-
     /**
      * Starts a session as well as initialises the database 
      * connection. 
@@ -28,15 +26,6 @@ class Core
     private static function init(): void
     {
         session_start();
-
-        $capsule = new Capsule();
-
-        $capsule->addConnection([
-            'driver' => 'sqlite',
-            'database' => static::$dbPath,
-        ]);
-
-        $capsule->setAsGlobal();
     }
 
     /**
@@ -47,7 +36,7 @@ class Core
      */
     public static function isSetup(): bool
     {
-        return file_exists(static::$dbPath);
+        return Store::exists('users/*');
     }
 
     /**
@@ -158,7 +147,7 @@ class Core
 
         // Run updater
         if (static::isSetup()) {
-            (new Updater);
+            // (new Updater);
         }
 
         // Register routes

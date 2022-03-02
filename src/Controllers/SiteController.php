@@ -6,27 +6,18 @@ namespace Stellif\Stellif\Controllers;
 
 use Stellif\Stellif\Request;
 use Stellif\Stellif\Response;
-use Illuminate\Database\Capsule\Manager as Capsule;
+use Stellif\Stellif\Store;
 
 class SiteController
 {
     private function getTheme(): string
     {
-        $theme = Capsule::table('meta')->where('key', 'theme')->first();
-
-        if ($theme) {
-            return $theme->value;
-        }
-
-        return 'default';
+        return Store::getInItem('meta', 'theme', 'default');
     }
 
     public function index(Request $request, Response $response)
     {
-        $posts = Capsule::table('posts')
-            ->where('status', 'published')
-            ->orderBy('published_at', 'desc')
-            ->get();
+        $posts = Store::get('posts');
 
         return $response->view('themes/' . $this->getTheme() . '/home', [
             'url' => $request->url(),
@@ -36,15 +27,15 @@ class SiteController
 
     public function post(Request $request, Response $response)
     {
-        $post = Capsule::table('posts')
-            ->where('status', 'published')
-            ->where('slug', $request->param('identifier'))
-            ->orWhere('id', $request->param('identifier'))
-            ->first();
+        $post = Store::getItem('posts/' . $request->param('slug'), false);
 
-        return $response->view('themes/' . $this->getTheme() . '/post', [
-            'url' => $request->url(),
-            'post' => $post,
-        ]);
+        if ($post) {
+            return $response->view('themes/' . $this->getTheme() . '/post', [
+                'url' => $request->url(),
+                'post' => $post,
+            ]);
+        }
+
+        return $response->make('Post not found ...');
     }
 }

@@ -2,5 +2,5 @@
 log/
 cache/
 vendor/
+store/
 assets/stellif/admin
-stellif.db
