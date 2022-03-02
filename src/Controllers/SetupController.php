@@ -54,11 +54,7 @@ class SetupController
         }
 
         // Create database
-        if (!$this->createDatabase()) {
-            return $response->view('stellif/setup', [
-                'error' => 'Something went wrong when creating the database',
-            ]);
-        }
+        $this->createDatabase();
 
         // Create user
         Capsule::table('users')->insert([
@@ -78,54 +74,51 @@ class SetupController
     {
         // Create database file
         mkdir(STELLIF_ROOT . '/db/', 0777);
+        $f = fopen(Core::$dbPath, 'w');
+        fclose($f);
+        chmod(Core::$dbPath, 0777);
 
-        if (file_put_contents(Core::$dbPath, '')) {
-            // Create users table
-            Capsule::schema()->dropIfExists('users');
+        // Create users table
+        Capsule::schema()->dropIfExists('users');
 
-            Capsule::schema()->create('users', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('email')->unique();
-                $table->string('password');
-                $table->timestamps();
-            });
+        Capsule::schema()->create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->timestamps();
+        });
 
-            // Create meta table
-            Capsule::schema()->dropIfExists('meta');
+        // Create meta table
+        Capsule::schema()->dropIfExists('meta');
 
-            Capsule::schema()->create('meta', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('key')->unique();
-                $table->text('value')->nullable();
-            });
+        Capsule::schema()->create('meta', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('key')->unique();
+            $table->text('value')->nullable();
+        });
 
-            // Create posts table
-            Capsule::schema()->dropIfExists('posts');
+        // Create posts table
+        Capsule::schema()->dropIfExists('posts');
 
-            Capsule::schema()->create('posts', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('user_id');
-                $table->text('title')->nullable();
-                $table->string('slug')->nullable();
-                $table->string('status');
-                $table->text('content')->nullable();
-                $table->dateTime('published_at')->nullable();
-                $table->timestamps();
-            });
+        Capsule::schema()->create('posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id');
+            $table->text('title')->nullable();
+            $table->string('slug')->nullable();
+            $table->string('status');
+            $table->text('content')->nullable();
+            $table->dateTime('published_at')->nullable();
+            $table->timestamps();
+        });
 
-            // Create post meta table
-            Capsule::schema()->dropIfExists('post_meta');
+        // Create post meta table
+        Capsule::schema()->dropIfExists('post_meta');
 
-            Capsule::schema()->create('post_meta', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('post_id');
-                $table->string('key')->unique();
-                $table->text('value')->nullable();
-            });
-
-            return true;
-        }
-
-        return false;
+        Capsule::schema()->create('post_meta', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('post_id');
+            $table->string('key')->unique();
+            $table->text('value')->nullable();
+        });
     }
 }
