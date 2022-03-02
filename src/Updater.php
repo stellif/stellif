@@ -2,27 +2,27 @@
 
 namespace Stellif\Stellif;
 
+use Stellif\Stellif\Store;
 use WpOrg\Requests\Requests;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Updater
 {
     private array $backupItems = [
         STELLIF_ROOT . '/assets/themes',
         STELLIF_ROOT . '/views/themes',
-        STELLIF_ROOT . '/db/core.db',
+        STELLIF_ROOT . '/store',
     ];
 
-    private string $infoURL = 'https://api.github.com/repos/stellif/stellif/releases/latest';
-    private string $latestReleaseURL;
+    private string $latestReleaseEndpoint = 'https://api.github.com/repos/stellif/stellif/releases/latest';
+    private string|bool $latestReleaseURL = false;
     private int|bool $updateCheckedTimestamp = false;
 
     public function __construct()
     {
-        $lastChecked = Capsule::table('meta')->where('key', 'update_checked_timestamp')->first();
+        $lastCheckedTimestamp = Store::getInItem('meta/update', 'last_checked_timestamp');
 
-        if ($lastChecked && $lastChecked->value !== '') {
-            $this->updateCheckedTimestamp = (int) $lastChecked->value;
+        if ($lastCheckedTimestamp) {
+            $this->updateCheckedTimestamp = (int) $lastCheckedTimestamp;
         }
 
         if ($this->isUpdateAvailable()) {
@@ -44,15 +44,14 @@ class Updater
 
         try {
             $version = @file_get_contents(STELLIF_ROOT . '/version.txt', true);
-            $latestReleaseRequest = Requests::get($this->infoURL, ['User-Agent' => 'stellif\stellif']);
+            $latestReleaseRequest = Requests::get($this->latestReleaseEndpoint, ['User-Agent' => 'stellif\stellif']);
 
             if ($latestReleaseRequest->success) {
                 $latestRelease = json_decode($latestReleaseRequest->body, true);
 
-                Capsule::table('meta')->upsert([[
-                    'key' => 'update_checked_timestamp',
-                    'value' => strval(time()),
-                ]], ['key']);
+                Store::update('meta/update', [
+                    'last_checked_timestamp' => time(),
+                ]);
 
                 if ($latestRelease['tag_name'] !== $version) {
                     $this->latestReleaseURL = $latestRelease['assets'][0]['browser_download_url'];
@@ -112,6 +111,8 @@ class Updater
                 unlink($path);
             }
         }
+
+        sleep(1);
     }
 
     private function backupFiles(): void
@@ -139,6 +140,8 @@ class Updater
                 rename($item, $backupPath);
             }
         }
+
+        sleep(1);
     }
 
     private function restoreBackupFiles(): void

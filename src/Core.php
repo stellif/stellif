@@ -36,7 +36,7 @@ class Core
      */
     public static function isSetup(): bool
     {
-        return Store::exists('users/*');
+        return Store::find('users') !== false;
     }
 
     /**
@@ -147,7 +147,7 @@ class Core
 
         // Run updater
         if (static::isSetup()) {
-            // (new Updater);
+            (new Updater);
         }
 
         // Register routes

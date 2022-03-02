@@ -64,7 +64,7 @@ jobs:
         run: cd admin && npm run build
 
       - name: "Remove not-needed files"
-        run: rm -rf .git/ && rm .gitignore && rm -rf admin/ && rm -rf .github/ && rm composer.json && rm composer.lock && rm DOCKER_ENV && rm docker_tag && rm new-in-this-release.log && rm output.log
+        run: rm -rf docs/ && rm -rf .git/ && rm .gitignore && rm -rf admin/ && rm -rf .github/ && rm composer.json && rm composer.lock && rm DOCKER_ENV && rm docker_tag && rm new-in-this-release.log && rm output.log
 
       - name: "ZIP"
         uses: papeloto/action-zip@v1

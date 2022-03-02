@@ -52,10 +52,10 @@ class Store
         return $default;
     }
 
-    public static function find(string $path, array $rules): bool|array
+    public static function find(string $path, array $rules = []): bool|array
     {
         $items = static::get($path);
-        $matchedItem = false;
+        $matchedItems = [];
 
         foreach ($items as $item) {
             $requirements = count($rules);
@@ -67,12 +67,23 @@ class Store
             }
 
             if ($requirements === 0) {
-                $matchedItem = $item;
+                $matchedItem[] = $item;
                 break;
             }
         }
 
-        return $matchedItem;
+        return $matchedItems;
+    }
+
+    public static function findFirst(string $path, array $rules = []): bool|array
+    {
+        $items = static::find($path, $rules);
+
+        if (count($items) > 0) {
+            return $items[0];
+        }
+
+        return false;
     }
 
     public static function put(string $path, array $data): void
@@ -94,14 +105,13 @@ class Store
         file_put_contents($fullPath, Yaml::dump($data));
     }
 
-    public static function exists(string $path): bool
+    public static function update(string $path, array $data): void
     {
-        $data = [];
+        $item = static::getItem($path);
 
-        foreach (glob(STELLIF_ROOT . '/store/' . $path . '.yaml') as $file) {
-            $data[] = $file;
-        }
-
-        return count($data) !== 0;
+        static::put($path, [
+            ...$item,
+            ...$data,
+        ]);
     }
 }
