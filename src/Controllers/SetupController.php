@@ -54,16 +54,17 @@ class SetupController
         }
 
         // Create database
-        $this->createDatabase();
+        if (!$this->createDatabase()) {
+            return $response->view('stellif/setup', [
+                'error' => 'Something went wrong when creating the database',
+            ]);
+        }
 
         // Create user
         Capsule::table('users')->insert([
             'email' => $request->input('email'),
             'password' => password_hash($request->input('password'), PASSWORD_BCRYPT),
         ]);
-
-        // Wait for DB creation.
-        usleep(500000);
 
         return $response->redirect('/admin');
     }
@@ -76,41 +77,53 @@ class SetupController
     private function createDatabase()
     {
         // Create database file
-        file_put_contents(Core::$dbPath, '');
+        if (file_put_contents(Core::$dbPath, '')) {
+            // Create users table
+            Capsule::schema()->dropIfExists('users');
 
-        // Create users table
-        Capsule::schema()->create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->timestamps();
-        });
+            Capsule::schema()->create('users', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('email')->unique();
+                $table->string('password');
+                $table->timestamps();
+            });
 
-        // Create meta table
-        Capsule::schema()->create('meta', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('key')->unique();
-            $table->text('value')->nullable();
-        });
+            // Create meta table
+            Capsule::schema()->dropIfExists('meta');
 
-        // Create posts table
-        Capsule::schema()->create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_id');
-            $table->text('title')->nullable();
-            $table->string('slug')->nullable();
-            $table->string('status');
-            $table->text('content')->nullable();
-            $table->dateTime('published_at')->nullable();
-            $table->timestamps();
-        });
+            Capsule::schema()->create('meta', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('key')->unique();
+                $table->text('value')->nullable();
+            });
 
-        // Create post meta table
-        Capsule::schema()->create('post_meta', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('post_id');
-            $table->string('key')->unique();
-            $table->text('value')->nullable();
-        });
+            // Create posts table
+            Capsule::schema()->dropIfExists('posts');
+
+            Capsule::schema()->create('posts', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('user_id');
+                $table->text('title')->nullable();
+                $table->string('slug')->nullable();
+                $table->string('status');
+                $table->text('content')->nullable();
+                $table->dateTime('published_at')->nullable();
+                $table->timestamps();
+            });
+
+            // Create post meta table
+            Capsule::schema()->dropIfExists('post_meta');
+
+            Capsule::schema()->create('post_meta', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('post_id');
+                $table->string('key')->unique();
+                $table->text('value')->nullable();
+            });
+
+            return true;
+        }
+
+        return false;
     }
 }
