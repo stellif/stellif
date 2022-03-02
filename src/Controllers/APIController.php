@@ -206,7 +206,7 @@ class APIController
             'slug' => $request->input('slug'),
             'status' => $request->input('status'),
             'content' => $request->input('content'),
-            'published_at' => $request->input('published_at'),
+            'published_at' => strtotime($request->input('published_at')),
         ]);
 
         return $response->json([
