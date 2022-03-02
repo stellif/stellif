@@ -6,7 +6,6 @@ namespace Stellif\Stellif;
 
 use Stellif\Stellif\Updater;
 use Bramus\Router\Router;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
  * The Core class is responsible for generic app things that
@@ -146,7 +145,9 @@ class Core
         static::init();
 
         // Run updater
-
+        if (static::isSetup()) {
+            (new Updater);
+        }
 
         // Register routes
         $router = new Router();
