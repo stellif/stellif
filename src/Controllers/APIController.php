@@ -43,12 +43,11 @@ class APIController
     public function tokenCheck(Request $request, Response $response)
     {
         // Does the user with such a token exist?
-        $user = Store::find('users', ['token' => $request->input('token')]);
+        $user = Store::findFirst('users', ['token' => $request->input('token')]);
 
         if (!$user) {
             return $response->json([
                 'error' => 'Authentication failed.',
-                'errorCode' => 0
             ]);
         }
     }
@@ -80,14 +79,12 @@ class APIController
         if (!$user) {
             return $response->json([
                 'error' => 'An account with the provided e-mail does not exist.',
-                'errorCode' => 2,
             ]);
         }
 
         if (!password_verify($request->input('password'), $user['password'])) {
             return $response->json([
                 'error' => 'Password is incorrect.',
-                'errorCode' => 3,
             ]);
         }
 
@@ -105,128 +102,115 @@ class APIController
         ]);
     }
 
-    // /**
-    //  * Returns all posts.
-    //  * 
-    //  * @param Request $request
-    //  * @param Response $response
-    //  * @return void
-    //  */
-    // public function getPosts(Request $request, Response $response)
-    // {
-    //     return $response->json(Capsule::table('posts')->get());
-    // }
+    /**
+     * Returns all posts.
+     * 
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
+    public function getPosts(Request $request, Response $response)
+    {
+        return $response->json(Store::find('posts'));
+    }
 
 
-    // /**
-    //  * Returns a single post.
-    //  * 
-    //  * @param Request $request
-    //  * @param Response $response
-    //  * @return void
-    //  */
-    // public function getPost(Request $request, Response $response)
-    // {
-    //     $post = Capsule::table('posts')->where('id', $request->param('id'))->first();
+    /**
+     * Returns a single post.
+     * 
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
+    public function getPost(Request $request, Response $response)
+    {
+        $post = Store::findFirst('posts', ['_id' => $request->param('id')]);
 
-    //     if (!$post) {
-    //         return $response->json([
-    //             'error' => 'No post found with this ID.',
-    //             'errorCode' => 4
-    //         ]);
-    //     }
+        if (!$post) {
+            return $response->json([
+                'error' => 'No post found with this ID.',
+            ]);
+        }
 
-    //     return $response->json($post);
-    // }
+        return $response->json($post);
+    }
 
-    // /**
-    //  * Creates a post and returns its id.
-    //  * 
-    //  * @param Request $request
-    //  * @param Response $response
-    //  * @return void
-    //  */
-    // public function createPost(Request $request, Response $response)
-    // {
-    //     $id = Capsule::table('posts')->insertGetId([
-    //         'user_id' => $request->session()->get('userId'),
-    //         'status' => 'draft',
-    //         'created_at' => date("Y-m-d H:i:s"),
-    //         'updated_at' => date("Y-m-d H:i:s"),
-    //     ]);
+    /**
+     * Creates a post and returns its id.
+     * 
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
+    public function createPost(Request $request, Response $response)
+    {
+        $id = Store::put('posts/:id', [
+            'status' => 'draft',
+            'created_at' => time(),
+            'updated_at' => time(),
+        ]);
 
-    //     return $response->json([
-    //         'id' => $id
-    //     ]);
-    // }
+        return $response->json([
+            'id' => $id
+        ]);
+    }
 
-    // /**
-    //  * Deletes a post.
-    //  * 
-    //  * @param Request $request
-    //  * @param Response $response
-    //  * @return void
-    //  */
-    // public function deletePost(Request $request, Response $response)
-    // {
-    //     Capsule::table('posts')->delete($request->param('id'));
+    /**
+     * Deletes a post.
+     * 
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
+    public function deletePost(Request $request, Response $response)
+    {
+        Store::remove('posts', ['_id' => $request->param('id')]);
 
-    //     return $response->json([
-    //         'ok' => true,
-    //     ]);
-    // }
+        return $response->json([
+            'ok' => true,
+        ]);
+    }
 
-    // /**
-    //  * Updates a post.
-    //  * 
-    //  * @param Request $request
-    //  * @param Response $response
-    //  * @return void
-    //  */
-    // public function updatePost(Request $request, Response $response)
-    // {
-    //     // Check that the post exists
-    //     if (!Capsule::table('posts')->where('id', $request->param('id'))->first()) {
-    //         return $response->json([
-    //             'error' => 'Not such post found.',
-    //             'errorCode' => 7,
-    //         ]);
-    //     }
+    /**
+     * Updates a post.
+     * 
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
+    public function updatePost(Request $request, Response $response)
+    {
+        // Check that the post exists
+        if (!Store::findFirst('posts', ['_id' => $request->param('id')])) {
+            return $response->json([
+                'error' => 'Not such post found.',
+            ]);
+        }
 
-    //     // Do preliminary validation
-    //     $validator = $request->validate([
-    //         'status' => 'equal:draft,published',
-    //         'content' => 'json',
-    //         'published_at' => 'date_format:Y-m-d H:i:s',
-    //     ]);
+        // Do preliminary validation
+        $validator = $request->validate([
+            'status' => 'equal:draft,published',
+            'content' => 'json',
+            'published_at' => 'date_format:Y-m-d H:i:s',
+        ]);
 
-    //     if ($validator->fails()) {
-    //         return $response->json([
-    //             'error' => $validator->firstError(),
-    //             'errorCode' => 5
-    //         ]);
-    //     }
+        if ($validator->fails()) {
+            return $response->json([
+                'error' => $validator->firstError(),
+            ]);
+        }
 
-    //     // Attempt to update post
-    //     try {
-    //         Capsule::table('posts')->where('id', $request->param('id'))->update([
-    //             'title' => $request->input('title'),
-    //             'slug' => $request->input('slug'),
-    //             'status' => $request->input('status'),
-    //             'content' => $request->input('content'),
-    //             'published_at' => $request->input('published_at'),
-    //         ]);
+        // Update post
+        Store::update('posts/' . $request->param('id'), [
+            'title' => $request->input('title'),
+            'slug' => $request->input('slug'),
+            'status' => $request->input('status'),
+            'content' => $request->input('content'),
+            'published_at' => $request->input('published_at'),
+        ]);
 
-    //         return $response->json([
-    //             'ok' => true,
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         Logger::log(__METHOD__, $e->getMessage());
-
-    //         return $response->json([
-    //             'error' => $e->getMessage(),
-    //             'errorCode' => 6
-    //         ]);
-    //     }
-    // }
+        return $response->json([
+            'ok' => true,
+        ]);
+    }
 }

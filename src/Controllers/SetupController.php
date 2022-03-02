@@ -51,7 +51,7 @@ class SetupController
             ]);
         }
 
-        Store::put('users/1', [
+        Store::put('users/:id', [
             'email' => $request->input('email'),
             'password' => password_hash($request->input('password'), PASSWORD_BCRYPT),
         ]);

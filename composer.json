@@ -20,6 +20,7 @@
         "askonomm/hird": "^1.0",
         "twig/twig": "^3.0",
         "rmccue/requests": "^2.0",
-        "symfony/yaml": "^6.0"
+        "symfony/yaml": "^6.0",
+        "ramsey/uuid": "^4.2"
     }
 }

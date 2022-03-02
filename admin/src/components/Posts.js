@@ -13,8 +13,7 @@ export default function Posts() {
         token,
       });
 
-      // Auth failed
-      if (response.data?.errorCode === 0) {
+      if (response.data?.error) {
         localStorage.removeItem("token");
         setToken(false);
         return;
@@ -34,8 +33,8 @@ export default function Posts() {
       <Link to="/create-post">Create post</Link>
       {posts.map((post, index) => (
         <div key={index}>
-          <Link to={`/edit-post/${post.id}`}>{post.title ?? "Untitled"}</Link>-
-          <Link to={`/delete-post/${post.id}`}>Delete</Link>
+          <Link to={`/edit-post/${post._id}`}>{post.title ?? "Untitled"}</Link>-
+          <Link to={`/delete-post/${post._id}`}>Delete</Link>
         </div>
       ))}
     </div>

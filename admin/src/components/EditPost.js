@@ -17,7 +17,7 @@ export default function EditPost() {
       });
 
       // No such post
-      if (response.data?.errorCode === 0) {
+      if (response.data?.error) {
         navigate("/");
         return;
       }
@@ -34,23 +34,10 @@ export default function EditPost() {
     const response = await _post(`post/${id}`, {
       token,
       ...post,
-      content: post.content ?? [],
+      content: post.content ?? JSON.stringify([]),
     });
 
-    // No such post.
-    if (response.data?.errorCode === 7) {
-      navigate("/");
-      return;
-    }
-
-    // Validation failed.
-    if (response.data?.errorCode === 5) {
-      alert(response.data.error);
-      return;
-    }
-
-    // DB update failed.
-    if (response.data?.errorCode === 6) {
+    if (response.data?.error) {
       alert(response.data.error);
       return;
     }
