@@ -20,6 +20,7 @@ class Updater
     public function __construct()
     {
         $lastCheckedTimestamp = Store::getInItem('meta/update', 'last_checked_timestamp');
+        var_dump
 
         if ($lastCheckedTimestamp) {
             $this->updateCheckedTimestamp = (int) $lastCheckedTimestamp;
@@ -53,7 +54,7 @@ class Updater
                     'last_checked_timestamp' => time(),
                 ]);
 
-                if ($latestRelease['tag_name'] !== $version) {
+                if (trim($latestRelease['tag_name']) !== trim($version)) {
                     $this->latestReleaseURL = $latestRelease['assets'][0]['browser_download_url'];
 
                     return true;
@@ -111,8 +112,6 @@ class Updater
                 unlink($path);
             }
         }
-
-        sleep(1);
     }
 
     private function backupFiles(): void
@@ -140,8 +139,6 @@ class Updater
                 rename($item, $backupPath);
             }
         }
-
-        sleep(1);
     }
 
     private function restoreBackupFiles(): void
