@@ -14,6 +14,8 @@ function App() {
     if (localStorage.getItem("token")) {
       setToken(localStorage.getItem("token"));
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
