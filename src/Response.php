@@ -42,7 +42,7 @@ class Response
 
             // Implement BlocksParser
             $twig->addFunction(new TwigFn('parse_blocks', function ($content) {
-                return (new BlocksParser($content))->parse();
+                return (new BlocksParser($content ?? "[]"))->parse();
             }));
 
             // Load template
