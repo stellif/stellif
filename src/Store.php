@@ -67,8 +67,7 @@ class Store
             }
 
             if ($requirements === 0) {
-                $matchedItem[] = $item;
-                break;
+                $matchedItems[] = $item;
             }
         }
 
