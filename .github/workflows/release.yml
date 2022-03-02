@@ -30,7 +30,7 @@ jobs:
           # If this is set to true, *every* commit will be treated as a new version.
           bump_each_commit: true
 
-      - run: echo ${{steps.semver.outputs.version_tag}} > .version
+      - run: echo ${{steps.semver.outputs.version_tag}} > version.txt
 
       - run: git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline > new-in-this-release.log
 
