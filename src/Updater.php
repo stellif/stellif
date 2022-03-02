@@ -20,7 +20,6 @@ class Updater
     public function __construct()
     {
         $lastCheckedTimestamp = Store::getInItem('meta/update', 'last_checked_timestamp');
-        var_dump
 
         if ($lastCheckedTimestamp) {
             $this->updateCheckedTimestamp = (int) $lastCheckedTimestamp;
