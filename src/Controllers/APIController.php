@@ -75,7 +75,7 @@ class APIController
         }
 
         // Validate user and password 
-        $user = Store::find('users', ['email' => $request->input('email')]);
+        $user = Store::findFirst('users', ['email' => $request->input('email')]);
 
         if (!$user) {
             return $response->json([
