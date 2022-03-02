@@ -17,7 +17,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
  */
 class Core
 {
-    public static string $dbPath = STELLIF_ROOT . '/stellif.db';
+    public static string $dbPath = STELLIF_ROOT . '/db/core.db';
 
     /**
      * Starts a session as well as initialises the database 

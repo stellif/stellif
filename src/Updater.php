@@ -10,7 +10,7 @@ class Updater
     private array $backupItems = [
         STELLIF_ROOT . '/assets/themes',
         STELLIF_ROOT . '/views/themes',
-        STELLIF_ROOT . '/stellif.db',
+        STELLIF_ROOT . '/db/core.db',
     ];
 
     private string $infoURL = 'https://api.github.com/repos/stellif/stellif/releases/latest';

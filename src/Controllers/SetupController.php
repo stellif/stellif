@@ -77,6 +77,8 @@ class SetupController
     private function createDatabase()
     {
         // Create database file
+        mkdir(STELLIF_ROOT . '/db/', 0777);
+
         if (file_put_contents(Core::$dbPath, '')) {
             // Create users table
             Capsule::schema()->dropIfExists('users');
