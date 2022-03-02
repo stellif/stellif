@@ -5,9 +5,16 @@ import CreatePost from "./components/CreatePost";
 import EditPost from "./components/EditPost";
 import DeletePost from "./components/DeletePost";
 import SignIn from "./components/SignIn";
+import { useEffect } from "react";
 
 function App() {
-  const [token] = useGlobalState("token");
+  const [token, setToken] = useGlobalState("token");
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
 
   return (
     <div className="app">

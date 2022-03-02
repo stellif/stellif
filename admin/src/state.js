@@ -1,7 +1,7 @@
 import { createGlobalState } from "react-hooks-global-state";
 
 const initialState = {
-  token: localStorage.getItem("token"),
+  token: false,
 };
 
 const { useGlobalState } = createGlobalState(initialState);
