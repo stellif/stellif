@@ -17,7 +17,7 @@ class SiteController
 
     public function index(Request $request, Response $response)
     {
-        $posts = Store::get('posts');
+        $posts = Store::get('posts', ['status' => 'published']);
 
         return $response->view('themes/' . $this->getTheme() . '/home', [
             'url' => $request->url(),
