@@ -98,7 +98,7 @@ class Updater
             }
         }
 
-        rmdir($path);
+        @rmdir($path);
     }
 
     private function deleteFiles(): void
