@@ -7,10 +7,10 @@ use WpOrg\Requests\Requests;
 
 class Updater
 {
-    private array $backupItems = [
-        STELLIF_ROOT . '/assets/themes',
-        STELLIF_ROOT . '/views/themes',
-        STELLIF_ROOT . '/store',
+    private array $doNotDelete = [
+        '\/assets\/themes.*',
+        '\/views\/themes.*',
+        '\/store.*',
     ];
 
     private string $latestReleaseEndpoint = 'https://api.github.com/repos/stellif/stellif/releases/latest';
@@ -89,6 +89,8 @@ class Updater
         $files = new \RecursiveIteratorIterator($directory, \RecursiveIteratorIterator::CHILD_FIRST);
 
         foreach ($files as $file) {
+            if (preg_match('/' . implode('|', $this->doNotDelete) . '/', $file->getPathname())) continue;
+
             if (is_dir($file)) {
                 rmdir($file);
             } else {
@@ -102,7 +104,7 @@ class Updater
     private function deleteFiles(): void
     {
         foreach (glob(STELLIF_ROOT . '/*') as $path) {
-            if ($path === STELLIF_ROOT . '/_tmp') continue;
+            if (preg_match('/' . implode('|', $this->doNotDelete) . '/', $path)) continue;
             if ($path === STELLIF_ROOT . '/stellif-update.zip') continue;
 
             if (is_dir($path)) {
@@ -111,64 +113,6 @@ class Updater
                 unlink($path);
             }
         }
-    }
-
-    private function backupFiles(): void
-    {
-        foreach ($this->backupItems as $item) {
-            if (is_dir($item)) {
-                foreach ($this->findFilesInPath($item) as $path) {
-                    $backupPath = STELLIF_ROOT . '/_tmp' . str_replace(STELLIF_ROOT, '', $path);
-
-                    if (!is_dir(dirname($backupPath))) {
-                        mkdir(dirname($backupPath), 0644, true);
-                    }
-
-                    rename($path, $backupPath);
-                }
-            }
-
-            if (is_file($item)) {
-                $backupPath = STELLIF_ROOT . '/_tmp' . str_replace(STELLIF_ROOT, '', $item);
-
-                if (!is_dir(dirname($backupPath))) {
-                    mkdir(dirname($backupPath), 0644, true);
-                }
-
-                rename($item, $backupPath);
-            }
-        }
-    }
-
-    private function restoreBackupFiles(): void
-    {
-        $files = $this->findFilesInPath(STELLIF_ROOT . '/_tmp');
-
-        foreach ($files as $item) {
-            if (is_dir($item)) {
-                foreach ($this->findFilesInPath($item) as $path) {
-                    $restorePath = STELLIF_ROOT . '/' . str_replace(STELLIF_ROOT . '/_tmp', '', $path);
-
-                    if (!is_dir(dirname($restorePath))) {
-                        mkdir(dirname($restorePath), 0644, true);
-                    }
-
-                    rename($path, $restorePath);
-                }
-            }
-
-            if (is_file($item)) {
-                $restorePath = STELLIF_ROOT . '/' . str_replace(STELLIF_ROOT . '/_tmp', '', $item);
-
-                if (!is_dir(dirname($restorePath))) {
-                    mkdir(dirname($restorePath), 0644, true);
-                }
-
-                rename($item, $restorePath);
-            }
-        }
-
-        $this->removeDir(STELLIF_ROOT . '/_tmp');
     }
 
     private function update(): void
@@ -180,9 +124,6 @@ class Updater
             ]);
 
             if ($response->success) {
-                // Backup files
-                $this->backupFiles();
-
                 // Delete files
                 $this->deleteFiles();
 
@@ -198,9 +139,6 @@ class Updater
 
                 // Delete update zip
                 unlink(STELLIF_ROOT . '/stellif-update.zip');
-
-                // Restore backup files
-                $this->restoreBackupFiles();
             }
         }
     }

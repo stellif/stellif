@@ -110,6 +110,7 @@ class Store
 
         // Store data
         unset($data['_id']);
+        unset($data['_path']);
         file_put_contents(str_replace(':id', $generatedId, $fullPath), Yaml::dump($data));
 
         if (str_contains($fullPath, ':id')) {

@@ -27,7 +27,7 @@ class SiteController
 
     public function post(Request $request, Response $response)
     {
-        $post = Store::getItem('posts/' . $request->param('slug'), false);
+        $post = Store::findFirst('posts', ['slug' => $request->param('identifier')]);
 
         if ($post) {
             return $response->view('themes/' . $this->getTheme() . '/post', [
