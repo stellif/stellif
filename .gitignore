@@ -3,4 +3,4 @@ log/
 cache/
 vendor/
 store/
-assets/stellif/admin
+public/assets/stellif/admin
