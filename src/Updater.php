@@ -112,7 +112,6 @@ class Updater
         }
     }
 
-
     /**
      * Undocumented function
      *
@@ -152,6 +151,19 @@ class Updater
                 $this->removeDir($path);
             } else {
                 unlink($path);
+            }
+        }
+    }
+
+    private function moveFiles(string $from, string $to): void
+    {
+        $directory = new \RecursiveDirectoryIterator($from,  \FilesystemIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($directory, \RecursiveIteratorIterator::CHILD_FIRST);
+
+        foreach ($files as $file) {
+            $path = $file->getPathname();
+            if (is_file($path)) {
+                rename($path, str_replace($from, $to, $path));
             }
         }
     }
@@ -197,7 +209,7 @@ class Updater
                 // If the public facing directory is not "public", rename
                 // it accordingly.
                 if ($dir !== 'public') {
-                    rmdir(STELLIF_ROOT . '/public', STELLIF_ROOT . '/' . $dir);
+                    $this->moveFiles(STELLIF_ROOT . '/public', STELLIF_ROOT . '/' . $dir);
                 }
 
                 // Delete update zip
