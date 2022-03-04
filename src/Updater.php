@@ -230,6 +230,7 @@ class Updater
                     // it accordingly.
                     if ($dir !== 'public') {
                         $this->moveFiles(STELLIF_ROOT . '/public', STELLIF_ROOT . '/' . $dir);
+                        $this->removeDir(STELLIF_ROOT . '/public');
                     }
 
                     // Delete update zip
