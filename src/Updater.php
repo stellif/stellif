@@ -162,8 +162,15 @@ class Updater
 
         foreach ($files as $file) {
             $path = $file->getPathname();
+
             if (is_file($path)) {
-                rename($path, str_replace($from, $to, $path));
+                $newPath = str_replace($from, $to, $path);
+
+                if (!is_dir(dirname($newPath))) {
+                    mkdir(dirname($newPath), 0777, true);
+                }
+
+                rename($path, $newPath);
             }
         }
     }
