@@ -70,7 +70,9 @@ class Updater
     }
 
     /**
-     * Undocumented function
+     * Checks if an update is available. Does not check when we're in
+     * development node or when the update was last checked less than 24 
+     * hours ago.
      *
      * @return boolean
      */
@@ -113,7 +115,8 @@ class Updater
     }
 
     /**
-     * Undocumented function
+     * Recursively removes a directory and its contents
+     * from `$path`.
      *
      * @param string $path
      * @return void
@@ -137,7 +140,7 @@ class Updater
     }
 
     /**
-     * Undocumented function
+     * Deletes all non-essential Stellif files.
      *
      * @return void
      */
@@ -155,6 +158,14 @@ class Updater
         }
     }
 
+    /**
+     * Moves all files and directories from one location
+     * to another.
+     *
+     * @param string $from
+     * @param string $to
+     * @return void
+     */
     private function moveFiles(string $from, string $to): void
     {
         $directory = new \RecursiveDirectoryIterator($from,  \FilesystemIterator::SKIP_DOTS);
@@ -176,50 +187,58 @@ class Updater
     }
 
     /**
-     * Undocumented function
+     * Updates Stellif by downloading a ZIP of a new version,
+     * deleting all existing core files, then extracting the ZIP.
+     * 
+     * Is aware of `htdocs/`, `public_html/` and `public/` directories,
+     * so should play well with most hosting providers out there.
      *
      * @return void
      */
     private function update(): void
     {
         if (isset($this->latestReleaseURL) && $this->latestReleaseURL !== '') {
-            // Download latest version
-            $response = Requests::get($this->latestReleaseURL, [], [
-                'filename' => STELLIF_ROOT . '/stellif-update.zip'
-            ]);
+            try {
+                // Download latest version
+                $response = Requests::get($this->latestReleaseURL, [], [
+                    'filename' => STELLIF_ROOT . '/stellif-update.zip'
+                ]);
 
-            // Prepare zipper
-            $zip = new \ZipArchive;
+                // Prepare zipper
+                $zip = new \ZipArchive;
 
-            if ($response->success && $zip->open(STELLIF_ROOT . '/stellif-update.zip') === true) {
-                // Figure out the public facing directory on this server
-                $dir = 'public';
+                if ($response->success && $zip->open(STELLIF_ROOT . '/stellif-update.zip') === true) {
+                    // Figure out the public facing directory on this server
+                    $dir = 'public';
 
-                if (is_dir(STELLIF_ROOT . '/public_html')) {
-                    $dir = 'public_html';
+                    if (is_dir(STELLIF_ROOT . '/public_html')) {
+                        $dir = 'public_html';
+                    }
+
+                    if (is_dir(STELLIF_ROOT . '/htdocs')) {
+                        $dir = 'htdocs';
+                    }
+
+                    // Delete files
+                    $this->deleteFiles();
+
+                    // Unpack files
+                    $zip->extractTo(STELLIF_ROOT);
+                    $zip->close();
+
+                    // If the public facing directory is not "public", rename
+                    // it accordingly.
+                    if ($dir !== 'public') {
+                        $this->moveFiles(STELLIF_ROOT . '/public', STELLIF_ROOT . '/' . $dir);
+                    }
+
+                    // Delete update zip
+                    unlink(STELLIF_ROOT . '/stellif-update.zip');
+                } else {
+                    Logger::log(__METHOD__, "Could not update Stellif.");
                 }
-
-                if (is_dir(STELLIF_ROOT . '/htdocs')) {
-                    $dir = 'htdocs';
-                }
-
-                // Delete files
-                $this->deleteFiles();
-
-                // Unpack files
-                $zip->extractTo(STELLIF_ROOT);
-                $zip->close();
-
-                // If the public facing directory is not "public", rename
-                // it accordingly.
-                if ($dir !== 'public') {
-                    $this->moveFiles(STELLIF_ROOT . '/public', STELLIF_ROOT . '/' . $dir);
-                }
-
-                // Delete update zip
-                unlink(STELLIF_ROOT . '/stellif-update.zip');
-            } else {
-                Logger::log(__METHOD__, "Could not update Stellif.");
+            } catch (\Exception $e) {
+                Logger::log(__METHOD__, $e->getMessage());
             }
         }
     }

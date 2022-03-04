@@ -105,16 +105,18 @@ class Store
         // Generate ID
         $generatedId = Uuid::uuid4();
 
-        // Create dir
+        // If the directory does not exist, create it.
         $dirname = dirname(str_replace(':id', $generatedId, $fullPath));
 
         if (!is_dir($dirname)) {
             mkdir($dirname, 0777, true);
         }
 
-        // Store data
+        // Unset transient data
         unset($data['_id']);
         unset($data['_path']);
+
+        // Store data
         file_put_contents(str_replace(':id', $generatedId, $fullPath), Yaml::dump($data));
 
         if (str_contains($fullPath, ':id')) {
