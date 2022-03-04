@@ -65,8 +65,12 @@ class Store
             $requirements = count($rules);
 
             foreach ($rules as $k => $v) {
-                if (isset($item[$k]) && $item[$k] === $v) {
-                    $requirements--;
+                $keys = explode('|', $k);
+
+                foreach ($keys as $key) {
+                    if (isset($item[$key]) && $item[$key] === $v) {
+                        $requirements--;
+                    }
                 }
             }
 
