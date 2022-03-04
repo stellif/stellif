@@ -188,7 +188,10 @@ class Updater
                 'filename' => STELLIF_ROOT . '/stellif-update.zip'
             ]);
 
-            if ($response->success) {
+            // Prepare zipper
+            $zip = new \ZipArchive;
+
+            if ($response->success && $zip->open(STELLIF_ROOT . '/stellif-update.zip') === true) {
                 // Figure out the public facing directory on this server
                 $dir = 'public';
 
@@ -204,14 +207,8 @@ class Updater
                 $this->deleteFiles();
 
                 // Unpack files
-                $zip = new \ZipArchive;
-
-                if ($zip->open(STELLIF_ROOT . '/stellif-update.zip') === true) {
-                    $zip->extractTo(STELLIF_ROOT);
-                    $zip->close();
-                } else {
-                    Logger::log(__METHOD__, 'Could not unzip update.');
-                }
+                $zip->extractTo(STELLIF_ROOT);
+                $zip->close();
 
                 // If the public facing directory is not "public", rename
                 // it accordingly.
@@ -221,6 +218,8 @@ class Updater
 
                 // Delete update zip
                 unlink(STELLIF_ROOT . '/stellif-update.zip');
+            } else {
+                Logger::log(__METHOD__, "Could not update Stellif.");
             }
         }
     }

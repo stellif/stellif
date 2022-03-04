@@ -51,6 +51,11 @@ class Logger
         } else {
             try {
                 $log = [$logItem];
+
+                if (!is_dir(dirname($logFileName))) {
+                    mkdir(dirname($logFileName, 0777, true));
+                }
+
                 file_put_contents($logFileName, json_encode($log));
             } catch (\Exception $e) {
                 error_log($e->getMessage(), 0);
