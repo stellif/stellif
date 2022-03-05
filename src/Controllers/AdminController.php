@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stellif\Stellif\Controllers;
 
+use Stellif\Stellif\Core;
 use Stellif\Stellif\Request;
 use Stellif\Stellif\Response;
 
@@ -24,7 +25,7 @@ class AdminController
      */
     public function index(Request $request, Response $response)
     {
-        $admin = file_get_contents(STELLIF_ROOT . '/public/assets/stellif/admin/index.html', true);
+        $admin = file_get_contents(STELLIF_ROOT . '/' . Core::publicDir() . '/assets/stellif/admin/index.html', true);
 
         if (!$admin) {
             return $response->make('Could not load admin.');

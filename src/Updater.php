@@ -208,17 +208,6 @@ class Updater
                 $zip = new \ZipArchive;
 
                 if ($response->success && $zip->open(STELLIF_ROOT . '/stellif-update.zip') === true) {
-                    // Figure out the public facing directory on this server
-                    $dir = 'public';
-
-                    if (is_dir(STELLIF_ROOT . '/public_html')) {
-                        $dir = 'public_html';
-                    }
-
-                    if (is_dir(STELLIF_ROOT . '/htdocs')) {
-                        $dir = 'htdocs';
-                    }
-
                     // Delete files
                     $this->deleteFiles();
 
@@ -228,8 +217,8 @@ class Updater
 
                     // If the public facing directory is not "public", rename
                     // it accordingly.
-                    if ($dir !== 'public') {
-                        $this->moveFiles(STELLIF_ROOT . '/public', STELLIF_ROOT . '/' . $dir);
+                    if (Core::publicDir() !== 'public') {
+                        $this->moveFiles(STELLIF_ROOT . '/public', STELLIF_ROOT . '/' . Core::publicDir());
                         $this->removeDir(STELLIF_ROOT . '/public');
                     }
 

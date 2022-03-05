@@ -28,6 +28,26 @@ class Core
     }
 
     /**
+     * Returns the name of the public directory.
+     *
+     * @return string
+     */
+    public static function publicDir(): string
+    {
+        $dir = 'public';
+
+        if (is_dir(STELLIF_ROOT . '/public_html')) {
+            $dir = 'public_html';
+        }
+
+        if (is_dir(STELLIF_ROOT . '/htdocs')) {
+            $dir = 'htdocs';
+        }
+
+        return $dir;
+    }
+
+    /**
      * Checks if the database file exists, which is used for 
      * indicating if the app is set-up or not.
      *
