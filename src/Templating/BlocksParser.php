@@ -2,6 +2,11 @@
 
 namespace Stellif\Stellif\Templating;
 
+/**
+ * Undocumented class
+ * 
+ * @author Asko Nomm <asko@bien.ee>
+ */
 class BlocksParser
 {
     public function __construct(

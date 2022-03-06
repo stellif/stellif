@@ -5,8 +5,21 @@ namespace Stellif\Stellif;
 use Symfony\Component\Yaml\Yaml;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * The Store class is Stellif's data engine. It takes care of
+ * things such as creating, updating and querying for data.
+ * 
+ * @author Asko Nomm <asko@bien.ee>
+ */
 class Store
 {
+    /**
+     * Given a file `$path`, returns the name of it, without extension, 
+     * which serves as the item' ID.
+     *
+     * @param string $path
+     * @return string
+     */
     private static function getIdFromPath(string $path): string
     {
         $parts = explode('/', $path);
@@ -14,6 +27,12 @@ class Store
         return str_replace('.yaml', '', end($parts));
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $path
+     * @return array
+     */
     public static function get(string $path): array
     {
         $fullPath = STELLIF_ROOT . '/store/' . $path . '/*.yaml';
@@ -70,6 +89,8 @@ class Store
                 foreach ($keys as $key) {
                     if (isset($item[$key]) && $item[$key] === $v) {
                         $requirements--;
+
+                        break;
                     }
                 }
             }

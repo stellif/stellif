@@ -4,6 +4,8 @@
 		<a href="{{ url }}/{{ post.slug ? post.slug : post._id }}">{{ post.title }}</a>
 	</h2>
 
+	<div class="date">{{ post.published_at|date("Y-m-d") }}</div>
+
 	<div class="entry">{{ parse_blocks(post.content)|raw }}</div>
 
 {% endfor %}
