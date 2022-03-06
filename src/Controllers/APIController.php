@@ -206,6 +206,7 @@ class APIController
             'slug' => $request->input('slug'),
             'status' => $request->input('status'),
             'content' => $request->input('content'),
+            'updated_at' => time(),
             'published_at' => $request->input('published_at') ? strtotime($request->input('published_at')) : null,
         ]);
 
