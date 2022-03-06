@@ -6,7 +6,6 @@ namespace Stellif\Stellif\Controllers;
 
 use Stellif\Stellif\Request;
 use Stellif\Stellif\Response;
-use Stellif\Stellif\Logger;
 use Stellif\Stellif\Store;
 
 /**

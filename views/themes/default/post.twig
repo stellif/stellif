@@ -1,3 +1,5 @@
+{% include 'themes/default/partials/header.twig' %}
+
 {% if post %}
 
 	<h2>
@@ -9,3 +11,5 @@
 	<div class="entry">{{ parse_blocks(post.content)|raw }}</div>
 
 {% endif %}
+
+{% include 'themes/default/partials/footer.twig' %}
