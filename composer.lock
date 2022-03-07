@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "askonomm/hird",
-            "version": "v1.0.14",
+            "version": "v1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/askonomm/hird.git",
-                "reference": "49a2e23470c291004f2fb203401408225fb61831"
+                "reference": "f313168d4b53b32b1ee3ce3e2e9ed749848f6985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/askonomm/hird/zipball/49a2e23470c291004f2fb203401408225fb61831",
-                "reference": "49a2e23470c291004f2fb203401408225fb61831",
+                "url": "https://api.github.com/repos/askonomm/hird/zipball/f313168d4b53b32b1ee3ce3e2e9ed749848f6985",
+                "reference": "f313168d4b53b32b1ee3ce3e2e9ed749848f6985",
                 "shasum": ""
             },
             "require": {
@@ -46,9 +46,9 @@
             "description": "An extensible validation library for your data with sane defaults.",
             "support": {
                 "issues": "https://github.com/askonomm/hird/issues",
-                "source": "https://github.com/askonomm/hird/tree/v1.0.14"
+                "source": "https://github.com/askonomm/hird/tree/v1.1"
             },
-            "time": "2022-02-27T21:21:00+00:00"
+            "time": "2022-03-06T21:48:02+00:00"
         },
         {
             "name": "bramus/router",
@@ -471,7 +471,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -533,7 +533,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.25.0"
             },
             "funding": [
                 {
@@ -553,7 +553,7 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -616,7 +616,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.25.0"
             },
             "funding": [
                 {
@@ -636,16 +636,16 @@
         },
         {
             "name": "symfony/polyfill-php80",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "57b712b08eddb97c762a8caa32c84e037892d2e9"
+                "reference": "4407588e0d3f1f52efb65fbe92babe41f37fe50c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/57b712b08eddb97c762a8caa32c84e037892d2e9",
-                "reference": "57b712b08eddb97c762a8caa32c84e037892d2e9",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/4407588e0d3f1f52efb65fbe92babe41f37fe50c",
+                "reference": "4407588e0d3f1f52efb65fbe92babe41f37fe50c",
                 "shasum": ""
             },
             "require": {
@@ -699,7 +699,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.25.0"
             },
             "funding": [
                 {
@@ -715,11 +715,11 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-13T13:58:33+00:00"
+            "time": "2022-03-04T08:16:47+00:00"
         },
         {
             "name": "symfony/polyfill-php81",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php81.git",
@@ -778,7 +778,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php81/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-php81/tree/v1.25.0"
             },
             "funding": [
                 {

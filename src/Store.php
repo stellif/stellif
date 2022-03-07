@@ -33,7 +33,7 @@ class Store
      * @param string $path
      * @return array
      */
-    public static function get(string $path): array
+    private static function get(string $path): array
     {
         $fullPath = STELLIF_ROOT . '/store/' . $path . '/*.yaml';
         $items = [];
@@ -45,7 +45,7 @@ class Store
         return $items;
     }
 
-    public static function getItem(string $path, mixed $default = []): array
+    private static function getItem(string $path, mixed $default = []): array
     {
         $fullPath = STELLIF_ROOT . '/store/' . $path . '.yaml';
 
@@ -75,43 +75,11 @@ class Store
         return $default;
     }
 
-    public static function find(string $path, array $rules = []): array
+    public static function find(string $path): StoreSearch
     {
         $items = static::get($path);
-        $matchedItems = [];
 
-        foreach ($items as $item) {
-            $requirements = count($rules);
-
-            foreach ($rules as $k => $v) {
-                $keys = explode('|', $k);
-
-                foreach ($keys as $key) {
-                    if (isset($item[$key]) && $item[$key] === $v) {
-                        $requirements--;
-
-                        break;
-                    }
-                }
-            }
-
-            if ($requirements === 0) {
-                $matchedItems[] = $item;
-            }
-        }
-
-        return $matchedItems;
-    }
-
-    public static function findFirst(string $path, array $rules = []): bool|array
-    {
-        $items = static::find($path, $rules);
-
-        if (count($items) > 0) {
-            return $items[0];
-        }
-
-        return false;
+        return new StoreSearch($items);
     }
 
     public static function put(string $path, array $data): ?string
@@ -166,7 +134,7 @@ class Store
         }
 
         // Otherwise, let's try to find the file according to `$rules`. 
-        $item = static::findFirst($path, $rules);
+        $item = static::find($path)->where($rules)->first();
 
         if ($item) {
             unlink($item['_path']);

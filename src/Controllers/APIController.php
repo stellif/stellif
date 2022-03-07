@@ -42,7 +42,7 @@ class APIController
     public function tokenCheck(Request $request, Response $response)
     {
         // Does the user with such a token exist?
-        $user = Store::findFirst('users', ['token' => $request->input('token')]);
+        $user = Store::find('users')->where(['token' => $request->input('token')])->first();
 
         if (!$user) {
             return $response->json([
@@ -73,7 +73,7 @@ class APIController
         }
 
         // Validate user and password 
-        $user = Store::findFirst('users', ['email' => $request->input('email')]);
+        $user = Store::find('users')->where(['email' => $request->input('email')])->first();
 
         if (!$user) {
             return $response->json([
@@ -110,7 +110,7 @@ class APIController
      */
     public function getPosts(Request $request, Response $response)
     {
-        return $response->json(Store::find('posts'));
+        return $response->json(Store::find('posts')->get());
     }
 
 
@@ -123,7 +123,7 @@ class APIController
      */
     public function getPost(Request $request, Response $response)
     {
-        $post = Store::findFirst('posts', ['_id' => $request->param('id')]);
+        $post = Store::find('posts')->where(['_id' => $request->param('id')])->first();
 
         if (!$post) {
             return $response->json([
@@ -180,7 +180,7 @@ class APIController
     public function updatePost(Request $request, Response $response)
     {
         // Check that the post exists
-        if (!Store::findFirst('posts', ['_id' => $request->param('id')])) {
+        if (!Store::find('posts')->where(['_id' => $request->param('id')])->first()) {
             return $response->json([
                 'error' => 'Not such post found.',
             ]);
@@ -190,7 +190,7 @@ class APIController
         $validator = $request->validate([
             'status' => 'equal:draft,published',
             'content' => 'json',
-            'published_at' => 'date_format:Y-m-d H:i:s',
+            'published_at' => 'date-format:Y-m-d H:i:s',
         ]);
 
         if ($validator->fails()) {

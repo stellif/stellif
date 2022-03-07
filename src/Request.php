@@ -100,7 +100,6 @@ class Request
         $hird->registerValidator('unique', (new UniqueValidator));
         $hird->registerValidator('json', (new JSONValidator));
         $hird->registerValidator('equal', (new EqualValidator));
-        $hird->registerValidator('date_format', (new DateFormatValidator));
 
         return $hird;
     }

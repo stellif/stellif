@@ -17,7 +17,10 @@ class SiteController
 
     public function index(Request $request, Response $response)
     {
-        $posts = Store::find('posts', ['status' => 'published']);
+        $posts = Store::find('posts')
+            ->where(['status' => 'published'])
+            ->orderAsc('published_at')
+            ->get();
 
         return $response->view('themes/' . $this->getTheme() . '/home', [
             'url' => $request->url(),
@@ -27,7 +30,7 @@ class SiteController
 
     public function post(Request $request, Response $response)
     {
-        $post = Store::findFirst('posts', ['slug|_id' => $request->param('identifier')]);
+        $post = Store::find('posts')->where(['slug|_id' => $request->param('identifier')])->first();
 
         if ($post) {
             return $response->view('themes/' . $this->getTheme() . '/post', [
