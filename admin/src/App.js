@@ -6,6 +6,7 @@ import EditPost from "./components/EditPost";
 import DeletePost from "./components/DeletePost";
 import SignIn from "./components/SignIn";
 import { useEffect } from "react";
+import "./css/app.css";
 
 function App() {
   const [token, setToken] = useGlobalState("token");

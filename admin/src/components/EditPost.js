@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import useGlobalState from "../state";
 import { _get, _post } from "../fetch";
 import Editor from "./Editor";
+import Page from "./Page";
+import PostTitle from "./PostTitle";
+import "../css/edit-post.css";
 
 export default function EditPost() {
   const [post, setPost] = useState(false);
@@ -48,17 +51,10 @@ export default function EditPost() {
   if (!post) return null;
 
   return (
-    <div className="edit-post">
-      <button type="submit" onClick={() => updatePost()}>
-        Save
-      </button>
-      <br />
-      <br />
-      <input
-        type="text"
+    <Page className="edit-post">
+      <PostTitle
         defaultValue={post.title?.trim()}
-        placeholder="Post title ..."
-        onChange={(e) => setPost({ ...post, title: e.target.value })}
+        onChange={(value) => setPost({ ...post, title: value })}
       />
 
       <input
@@ -88,6 +84,9 @@ export default function EditPost() {
           setPost({ ...post, content: JSON.stringify(content) })
         }
       />
-    </div>
+      <button type="submit" onClick={() => updatePost()}>
+        Save
+      </button>
+    </Page>
   );
 }
