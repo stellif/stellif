@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>{% if post %}{{ post.title }} - {% endif %}{{title}}</title>
 	<link rel="stylesheet" href="{{url}}/assets/themes/default/css/style.css">
 </head>
 <body>

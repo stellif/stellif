@@ -45,7 +45,7 @@ class Store
         return $items;
     }
 
-    private static function getItem(string $path, mixed $default = []): array
+    public static function getItem(string $path): ?array
     {
         $fullPath = STELLIF_ROOT . '/store/' . $path . '.yaml';
 
@@ -61,25 +61,12 @@ class Store
             ];
         }
 
-        return $default;
+        return null;
     }
 
-    public static function getInItem(string $path, string $key, mixed $default = null): mixed
+    public static function find(string $directory): StoreSearch
     {
-        $data = static::getItem($path);
-
-        if (isset($data[$key])) {
-            return $data[$key];
-        }
-
-        return $default;
-    }
-
-    public static function find(string $path): StoreSearch
-    {
-        $items = static::get($path);
-
-        return new StoreSearch($items);
+        return new StoreSearch(static::get($directory));
     }
 
     public static function put(string $path, array $data): ?string

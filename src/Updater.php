@@ -58,10 +58,10 @@ class Updater
      */
     public function __construct()
     {
-        $lastCheckedTimestamp = Store::getInItem('meta/update', 'last_checked_timestamp');
+        $meta = Store::find('meta')->where(['_id' => 'update'])->first();
 
-        if ($lastCheckedTimestamp) {
-            $this->updateCheckedTimestamp = (int) $lastCheckedTimestamp;
+        if ($meta && isset($meta['last_checked_timestamp'])) {
+            $this->updateCheckedTimestamp = (int) $meta['last_checked_timestamp'];
         }
 
         if ($this->isUpdateAvailable()) {
