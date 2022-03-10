@@ -58,7 +58,7 @@ class Updater
      */
     public function __construct()
     {
-        $meta = Store::find('meta')->where(['_id' => 'update'])->first();
+        $meta = Store::find('meta')->where(['_id' => 'site'])->first();
 
         if ($meta && isset($meta['last_checked_timestamp'])) {
             $this->updateCheckedTimestamp = (int) $meta['last_checked_timestamp'];
@@ -95,7 +95,7 @@ class Updater
             if ($latestReleaseRequest->success) {
                 $latestRelease = json_decode($latestReleaseRequest->body, true);
 
-                Store::update('meta/update', [
+                Store::update('meta/site', [
                     'last_checked_timestamp' => time(),
                 ]);
 
