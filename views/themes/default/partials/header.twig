@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-	<meta charset="utf-8">
-	<title>{% if post %}{{ post.title }} - {% endif %}{{title}}</title>
-	<link rel="stylesheet" href="{{url}}/assets/themes/default/css/style.css">
+<meta charset="utf-8">
+<title>
+	{% if post %}
+		{{ post.title }}
+		-
+	{% endif %}
+	{{title}}
+</title>
+<link rel="stylesheet" href="{{url}}/assets/themes/default/css/style.css">
 </head>
 <body>
+
+	<div class="header">
+		<h1>{{ title}}</h1>
+		{% if description %}
+			<p class="site-description">{{ description }}</p>
+		{% endif %}
+	</div>
