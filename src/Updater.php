@@ -60,8 +60,8 @@ class Updater
     {
         $meta = Store::find('meta')->where(['_id' => 'site'])->first();
 
-        if ($meta && isset($meta['last_checked_timestamp'])) {
-            $this->updateCheckedTimestamp = (int) $meta['last_checked_timestamp'];
+        if ($meta && isset($meta['update_checked'])) {
+            $this->updateCheckedTimestamp = (int) $meta['update_checked'];
         }
 
         if ($this->isUpdateAvailable()) {
@@ -96,7 +96,7 @@ class Updater
                 $latestRelease = json_decode($latestReleaseRequest->body, true);
 
                 Store::update('meta/site', [
-                    'last_checked_timestamp' => time(),
+                    'update_checked' => time(),
                 ]);
 
                 if (trim($latestRelease['tag_name']) !== trim($version)) {
