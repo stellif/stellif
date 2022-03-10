@@ -16,6 +16,6 @@
 	<div class="header">
 		<h1>{{ title}}</h1>
 		{% if description %}
-			<p class="site-description">{{ description }}</p>
+			<p class="site-description">{{ description|raw }}</p>
 		{% endif %}
 	</div>
