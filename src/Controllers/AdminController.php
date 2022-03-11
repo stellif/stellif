@@ -14,7 +14,7 @@ use Stellif\Stellif\Response;
  * 
  * @author Asko Nomm <asko@bien.ee>
  */
-class AdminController
+class AdminController extends Core
 {
     /**
      * Loads the admin panel.
@@ -25,7 +25,7 @@ class AdminController
      */
     public function index(Request $request, Response $response)
     {
-        $admin = file_get_contents(STELLIF_ROOT . '/' . Core::publicDir() . '/assets/stellif/admin/index.html', true);
+        $admin = file_get_contents(STELLIF_ROOT . '/' . $this->publicDir() . '/assets/stellif/admin/index.html', true);
 
         if (!$admin) {
             return $response->make('Could not load admin.');

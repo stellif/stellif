@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Stellif\Stellif\Controllers;
 
+use Stellif\Stellif\Core;
 use Stellif\Stellif\Request;
 use Stellif\Stellif\Response;
-use Stellif\Stellif\Store;
 
 /**
  * The APIController is responsible for everything you see
  * in the admin panel. Since the admin panel is largely driven 
  * by JS, it relies on an API to function.
  */
-class APIController
+class APIController extends Core
 {
     /**
      * A preflight response to browsers requiring one.
@@ -42,7 +42,7 @@ class APIController
     public function tokenCheck(Request $request, Response $response)
     {
         // Does the user with such a token exist?
-        $user = Store::find('users')->where(['token' => $request->input('token')])->first();
+        $user = $this->store()->find('users')->where(['token' => $request->input('token')])->first();
 
         if (!$user) {
             return $response->json([
@@ -73,7 +73,7 @@ class APIController
         }
 
         // Validate user and password 
-        $user = Store::find('users')->where(['email' => $request->input('email')])->first();
+        $user = $this->store()->find('users')->where(['email' => $request->input('email')])->first();
 
         if (!$user) {
             return $response->json([
@@ -90,7 +90,7 @@ class APIController
         // Create and set token
         $token = bin2hex(random_bytes(20));
 
-        Store::put('users/' . $user['_id'], [
+        $this->store()->put('users/' . $user['_id'], [
             ...$user,
             'token' => $token,
         ]);
@@ -110,7 +110,7 @@ class APIController
      */
     public function getPosts(Request $request, Response $response)
     {
-        return $response->json(Store::find('posts')->get());
+        return $response->json($this->store()->find('posts')->get());
     }
 
 
@@ -123,7 +123,7 @@ class APIController
      */
     public function getPost(Request $request, Response $response)
     {
-        $post = Store::find('posts')->where(['_id' => $request->param('id')])->first();
+        $post = $this->store()->find('posts')->where(['_id' => $request->param('id')])->first();
 
         if (!$post) {
             return $response->json([
@@ -143,7 +143,7 @@ class APIController
      */
     public function createPost(Request $request, Response $response)
     {
-        $id = Store::put('posts/:id', [
+        $id = $this->store()->put('posts/:id', [
             'status' => 'draft',
             'created_at' => time(),
             'updated_at' => time(),
@@ -163,7 +163,7 @@ class APIController
      */
     public function deletePost(Request $request, Response $response)
     {
-        Store::remove('posts', ['_id' => $request->param('id')]);
+        $this->store()->remove('posts', ['_id' => $request->param('id')]);
 
         return $response->json([
             'ok' => true,
@@ -180,7 +180,7 @@ class APIController
     public function updatePost(Request $request, Response $response)
     {
         // Check that the post exists
-        if (!Store::find('posts')->where(['_id' => $request->param('id')])->first()) {
+        if (!$this->store()->find('posts')->where(['_id' => $request->param('id')])->first()) {
             return $response->json([
                 'error' => 'Not such post found.',
             ]);
@@ -200,7 +200,7 @@ class APIController
         }
 
         // Update post
-        Store::update('posts/' . $request->param('id'), [
+        $this->store()->update('posts/' . $request->param('id'), [
             'title' => $request->input('title'),
             'slug' => $request->input('slug'),
             'status' => $request->input('status'),

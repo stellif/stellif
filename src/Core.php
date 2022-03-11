@@ -6,6 +6,7 @@ namespace Stellif\Stellif;
 
 use Stellif\Stellif\Updater;
 use Bramus\Router\Router;
+use Askonomm\Siena\Siena;
 
 /**
  * The Core class is responsible for generic app things that
@@ -16,13 +17,18 @@ use Bramus\Router\Router;
  */
 class Core
 {
+    protected function store(): Siena
+    {
+        return new Siena(STELLIF_ROOT . '/store');
+    }
+
     /**
      * Starts a session as well as initialises the database 
      * connection. 
      *
      * @return void
      */
-    private static function init(): void
+    private function init(): void
     {
         session_start();
     }
@@ -32,7 +38,7 @@ class Core
      *
      * @return string
      */
-    public static function publicDir(): string
+    public function publicDir(): string
     {
         $dir = 'public';
 
@@ -53,9 +59,9 @@ class Core
      *
      * @return boolean
      */
-    public static function isSetup(): bool
+    public function isSetup(): bool
     {
-        return count(Store::find('users')->get()) !== 0;
+        return count($this->store()->find('users')->get()) !== 0;
     }
 
     /**
@@ -64,9 +70,9 @@ class Core
      *
      * @return array
      */
-    private static function routes(): array
+    private function routes(): array
     {
-        if (static::isSetup()) {
+        if ($this->isSetup()) {
             return [
                 ...require STELLIF_ROOT . '/routes/api.php',
                 ...require STELLIF_ROOT . '/routes/admin.php',
@@ -79,12 +85,12 @@ class Core
 
     /**
      * Get the parameter names from a route pattern, in order, 
-     * to be able to match against route arguments in `static::setRoutes`. 
+     * to be able to match against route arguments in `setRoutes`. 
      *
      * @param string $pattern
      * @return array
      */
-    private static function getParamNamesFromRoutePattern(string $pattern): array
+    private function getParamNamesFromRoutePattern(string $pattern): array
     {
         $names = [];
         $parts = explode('/', $pattern);
@@ -99,21 +105,21 @@ class Core
     }
 
     /**
-     * Sets `static::$routes` to the router.
+     * Sets `$routes` to the router.
      *
      * @param Router $router
      * @return void
      */
-    private static function setRoutes(Router $router): void
+    private function setRoutes(Router $router): void
     {
-        foreach (static::routes() as $route) {
+        foreach ($this->routes() as $route) {
             $router->{$route['method']}($route['pattern'], function ($p0 = null, $p1 = null, $p2 = null, $p3 = null) use ($route) {
                 $callableControllerName = explode('@', $route['callable'])[0];
                 $callableClassName = "\Stellif\Stellif\Controllers\\${callableControllerName}";
                 $callableClassMethod = explode('@', $route['callable'])[1];
                 $callableClass = new $callableClassName();
                 $request = new Request();
-                $paramNames = static::getParamNamesFromRoutePattern($route['pattern']);
+                $paramNames = $this->getParamNamesFromRoutePattern($route['pattern']);
 
                 // Set params
                 if ($p0) $request->setParam($paramNames[0], $p0);
@@ -159,20 +165,19 @@ class Core
      *
      * @return void
      */
-    public static function run(): void
+    public function run(): void
     {
         // Init app
-        static::init();
+        $this->init();
 
         // Run updater
-        if (static::isSetup()) {
+        if ($this->isSetup()) {
             (new Updater);
         }
 
         // Register routes
         $router = new Router();
-
-        static::setRoutes($router);
+        $this->setRoutes($router);
 
         // Run app
         $router->run();

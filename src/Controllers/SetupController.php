@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Stellif\Stellif\Controllers;
 
+use Stellif\Stellif\Core;
 use Stellif\Stellif\Request;
 use Stellif\Stellif\Response;
-use Stellif\Stellif\Store;
 
 /**
  * The SetupController is the first entry-point of a user to the
@@ -15,7 +15,7 @@ use Stellif\Stellif\Store;
  * 
  * @author Asko Nomm <asko@bien.ee>
  */
-class SetupController
+class SetupController extends Core
 {
     /**
      * Displays the set-up page.
@@ -51,7 +51,7 @@ class SetupController
             ]);
         }
 
-        Store::put('users/:id', [
+        $this->store()->put('users/:id', [
             'email' => $request->input('email'),
             'password' => password_hash($request->input('password'), PASSWORD_BCRYPT),
         ]);

@@ -21,6 +21,7 @@
         "twig/twig": "^3.0",
         "rmccue/requests": "^2.0",
         "symfony/yaml": "^6.0",
-        "ramsey/uuid": "^4.2"
+        "ramsey/uuid": "^4.2",
+        "askonomm/siena": "^0.1.0"
     }
 }

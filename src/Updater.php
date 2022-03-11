@@ -2,7 +2,6 @@
 
 namespace Stellif\Stellif;
 
-use Stellif\Stellif\Store;
 use WpOrg\Requests\Requests;
 
 /**
@@ -12,7 +11,7 @@ use WpOrg\Requests\Requests;
  * 
  * @author Asko Nomm <asko@bien.ee> 
  */
-class Updater
+class Updater extends Core
 {
     /**
      * Paths that should not be deleted when replacing 
@@ -58,7 +57,7 @@ class Updater
      */
     public function __construct()
     {
-        $meta = Store::find('meta')->where(['_id' => 'site'])->first();
+        $meta = $this->store()->find('meta')->where(['_id' => 'site'])->first();
 
         if ($meta && isset($meta['update_checked'])) {
             $this->updateCheckedTimestamp = (int) $meta['update_checked'];
@@ -95,7 +94,7 @@ class Updater
             if ($latestReleaseRequest->success) {
                 $latestRelease = json_decode($latestReleaseRequest->body, true);
 
-                Store::update('meta/site', [
+                $this->store()->update('meta/site', [
                     'update_checked' => time(),
                 ]);
 

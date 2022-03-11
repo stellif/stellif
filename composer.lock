@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d2df1babf9282e04758f7e621aa405b",
+    "content-hash": "2e2cb434aa92944a0148973b4ea83c15",
     "packages": [
         {
             "name": "askonomm/hird",
-            "version": "v1.1",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/askonomm/hird.git",
-                "reference": "f313168d4b53b32b1ee3ce3e2e9ed749848f6985"
+                "reference": "d2a1290423e1102b23fc8e042cef5420a42c02af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/askonomm/hird/zipball/f313168d4b53b32b1ee3ce3e2e9ed749848f6985",
-                "reference": "f313168d4b53b32b1ee3ce3e2e9ed749848f6985",
+                "url": "https://api.github.com/repos/askonomm/hird/zipball/d2a1290423e1102b23fc8e042cef5420a42c02af",
+                "reference": "d2a1290423e1102b23fc8e042cef5420a42c02af",
                 "shasum": ""
             },
             "require": {
@@ -46,9 +46,52 @@
             "description": "An extensible validation library for your data with sane defaults.",
             "support": {
                 "issues": "https://github.com/askonomm/hird/issues",
-                "source": "https://github.com/askonomm/hird/tree/v1.1"
+                "source": "https://github.com/askonomm/hird/tree/v1.1.1"
             },
-            "time": "2022-03-06T21:48:02+00:00"
+            "time": "2022-03-06T21:49:33+00:00"
+        },
+        {
+            "name": "askonomm/siena",
+            "version": "v0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/askonomm/siena.git",
+                "reference": "e8b4731e50490d495eda2c54871d49364f2ee1d9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/askonomm/siena/zipball/e8b4731e50490d495eda2c54871d49364f2ee1d9",
+                "reference": "e8b4731e50490d495eda2c54871d49364f2ee1d9",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "ramsey/uuid": "^4.2",
+                "symfony/yaml": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Askonomm\\Siena\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Asko Nomm",
+                    "email": "asko@bien.ee",
+                    "homepage": "https://bien.ee"
+                }
+            ],
+            "description": "A flat-file data store engine and query builder.",
+            "support": {
+                "issues": "https://github.com/askonomm/siena/issues",
+                "source": "https://github.com/askonomm/siena/tree/v0.1"
+            },
+            "time": "2022-03-11T02:23:34+00:00"
         },
         {
             "name": "bramus/router",

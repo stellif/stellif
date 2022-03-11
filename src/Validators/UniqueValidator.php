@@ -2,8 +2,8 @@
 
 namespace Stellif\Stellif\Validators;
 
+use Stellif\Stellif\Core;
 use Askonomm\Hird\Validators\Validator;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
  * Implements a Unique validator that has a job 
@@ -12,7 +12,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
  * 
  * @author Asko Nomm <asko@bien.ee>
  */
-class UniqueValidator implements Validator
+class UniqueValidator extends Core implements Validator
 {
 	/**
 	 * Returns a boolean `true` when given `$value` is a valid e-mail
@@ -25,7 +25,7 @@ class UniqueValidator implements Validator
 	 */
 	public static function validate(string $field, mixed $value, mixed $modifier = null): bool
 	{
-		if (Capsule::table($modifier)->where($field, $value)->first()) {
+		if (parent::store()->find($modifier)->where([$field => $value])->first()) {
 			return false;
 		}
 
