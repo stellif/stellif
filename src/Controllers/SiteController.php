@@ -7,7 +7,6 @@ namespace Stellif\Stellif\Controllers;
 use Stellif\Stellif\Core;
 use Stellif\Stellif\Request;
 use Stellif\Stellif\Response;
-use Askonomm\Siena\Siena;
 
 class SiteController extends Core
 {
@@ -20,7 +19,7 @@ class SiteController extends Core
 
     public function index(Request $request, Response $response)
     {
-        $meta = $this->store()->find('meta')->where(['_id' => 'site'])->first();
+        $meta = $this->store()->find('meta')->where(['_id' => 'site'])->first() ?? [];
         $posts = $this->store()->find('posts')
             ->where(['status' => 'published'])
             ->orderAsc('published_at')
@@ -35,7 +34,7 @@ class SiteController extends Core
 
     public function post(Request $request, Response $response)
     {
-        $meta = $this->store()->find('meta')->where(['_id' => 'site'])->first();
+        $meta = $this->store()->find('meta')->where(['_id' => 'site'])->first() ?? [];
         $post = $this->store()->find('posts')->where(['slug|_id' => $request->param('identifier')])->first();
 
         if ($post) {
