@@ -14,7 +14,7 @@ class SiteController extends Core
     {
         $meta = $this->store()->find('meta')->where(['_id' => 'site'])->first();
 
-        return $meta && isset($meta['theme']) ? $meta['theme'] : 'default';
+        return $meta && isset($meta->theme) ? $meta->theme : 'default';
     }
 
     public function index(Request $request, Response $response)
