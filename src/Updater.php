@@ -59,8 +59,8 @@ class Updater extends Core
     {
         $meta = $this->store()->find('meta')->where(['_id' => 'site'])->first();
 
-        if ($meta && isset($meta['update_checked'])) {
-            $this->updateCheckedTimestamp = (int) $meta['update_checked'];
+        if ($meta && isset($meta->update_checked)) {
+            $this->updateCheckedTimestamp = (int) $meta->update_checked;
         }
 
         if ($this->isUpdateAvailable()) {
