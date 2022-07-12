@@ -81,7 +81,7 @@ class APIController extends Core
             ]);
         }
 
-        if (!password_verify($request->input('password'), $user['password'])) {
+        if (!password_verify($request->input('password'), $user->password)) {
             return $response->json([
                 'error' => 'Password is incorrect.',
             ]);
@@ -90,7 +90,7 @@ class APIController extends Core
         // Create and set token
         $token = bin2hex(random_bytes(20));
 
-        $this->store()->put('users/' . $user['_id'], [
+        $this->store()->put('users/' . $user->_id, [
             ...$user,
             'token' => $token,
         ]);
