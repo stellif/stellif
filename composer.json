@@ -22,6 +22,6 @@
         "rmccue/requests": "^2.0",
         "symfony/yaml": "^6.0",
         "ramsey/uuid": "^4.2",
-        "askonomm/siena": "^0.0.8"
+        "askonomm/siena": "^0.0.9"
     }
 }
