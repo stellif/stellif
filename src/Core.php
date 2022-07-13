@@ -61,7 +61,7 @@ class Core
      */
     public function isSetup(): bool
     {
-        return $this->store()->find('users')->get()->count() !== 0;
+        return count($this->store()->find('users')->get()) !== 0;
     }
 
     /**

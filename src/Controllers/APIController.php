@@ -81,9 +81,6 @@ class APIController extends Core
             ]);
         }
 
-        var_dump($user);
-        var_dump($user->password);
-
         if (!password_verify($request->input('password'), $user->password)) {
             return $response->json([
                 'error' => 'Password is incorrect.',
